@@ -8,11 +8,13 @@ import { onAuthStateChanged } from "firebase/auth";
 const App = () => {
   const [init, setInit] = useState(false);
   const [isAuth, setIsAuth] = useState(false);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         setIsAuth(true);
+        setUser(user);
       } else {
         setIsAuth(false);
       }
@@ -20,7 +22,7 @@ const App = () => {
     });
   }, []);
 
-  return <>{init ? <Router isAuth={isAuth} /> : "Loading..."}</>;
+  return <>{init ? <Router isAuth={isAuth} user={user} /> : "Loading..."}</>;
 };
 
 export default App;
