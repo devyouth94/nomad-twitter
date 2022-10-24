@@ -1,7 +1,8 @@
 import React, { useRef, useState } from "react";
 
-import { firedb } from "../shared/firebaseInstance";
+import { firedb, storage } from "../shared/firebaseInstance";
 import { deleteDoc, doc, updateDoc } from "firebase/firestore";
+import { deleteObject, ref } from "firebase/storage";
 
 const Tweet = ({ tweet, user }) => {
   const [isEdit, setIsEdit] = useState(false);
@@ -11,6 +12,9 @@ const Tweet = ({ tweet, user }) => {
     const ok = window.confirm("트윗을 삭제합니다");
     if (ok) {
       await deleteDoc(doc(firedb, "tweets", `${tweet.id}`));
+      if (tweet.fileUrl !== "") {
+        await deleteObject(ref(storage, tweet.fileUrl));
+      }
     }
   };
 
@@ -37,6 +41,7 @@ const Tweet = ({ tweet, user }) => {
       ) : (
         <>
           <h4>{tweet.text}</h4>
+          {tweet.fileUrl && <img src={tweet.fileUrl} width="50px" alt={"file"} />}
           {user && (
             <>
               <button onClick={onDeleteHandler}>delete</button>
