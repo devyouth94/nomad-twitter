@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Router from "./routers/Router";
 
 import { auth } from "./shared/firebaseInstance";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, updateProfile } from "firebase/auth";
 
 const App = () => {
   const [init, setInit] = useState(false);
@@ -14,7 +14,11 @@ const App = () => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         setIsAuth(true);
-        setUser(user);
+        setUser({
+          displayName: user.displayName,
+          uid: user.uid,
+          updateProfile: () => updateProfile(user, { displayName: user.displayName }),
+        });
       } else {
         setIsAuth(false);
       }
@@ -22,7 +26,16 @@ const App = () => {
     });
   }, []);
 
-  return <>{init ? <Router isAuth={isAuth} user={user} /> : "Loading..."}</>;
+  const refreshUser = () => {
+    const user = auth.currentUser;
+    setUser({
+      displayName: user.displayName,
+      uid: user.uid,
+      updateProfile: () => updateProfile(user, { displayName: user.displayName }),
+    });
+  };
+
+  return <>{init ? <Router isAuth={isAuth} user={user} refreshUser={refreshUser} /> : "Loading..."}</>;
 };
 
 export default App;

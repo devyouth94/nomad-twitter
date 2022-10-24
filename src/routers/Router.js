@@ -7,15 +7,15 @@ import Home from "../pages/Home";
 import Profile from "../pages/Profile";
 import Auth from "../pages/Auth";
 
-const Router = ({ isAuth, user }) => {
+const Router = ({ isAuth, user, refreshUser }) => {
   return (
     <>
-      {isAuth && <Navigation />}
+      {isAuth && <Navigation user={user} />}
       <Routes>
         {isAuth ? (
           <>
             <Route path="/" element={<Home user={user} />} />
-            <Route path="/profile" element={<Profile />} />
+            <Route path="/profile" element={<Profile user={user} refreshUser={refreshUser} />} />
           </>
         ) : (
           <>
