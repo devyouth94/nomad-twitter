@@ -50,8 +50,7 @@ const Auth = () => {
       provider = new GithubAuthProvider();
     }
 
-    const data = await signInWithPopup(auth, provider);
-    console.log(data);
+    await signInWithPopup(auth, provider);
   };
 
   const toggleHandler = () => {
